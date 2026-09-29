@@ -1,5 +1,17 @@
 # Implementation report
 
+## Temporary public mode update
+
+Added `VITE_REQUIRE_COACH_AUTH=false` for production. Roster is the direct landing view, with login UI/authentication requests/sign-out hidden in this mode. Existing auth components and protected database implementation are preserved and tested with the flag true. Restore via the GitHub repository variable and redeploy.
+
+Added `public.coach_public_dashboard()`, a read-only SECURITY INVOKER aggregation of sources verified already readable through anonymous REST requests. No RLS policy, source-table grant, private-view grant, or privileged credential was changed. The public function reuses generated SQL from the existing verified calculation definitions; anonymous roster/races exactly match the private versions. Existing physiology and race-neighborhood algorithms remain unchanged.
+
+Validation: 3 unit tests and 10 desktop/mobile browser tests across both auth modes passed; production build passed; anonymous REST public access and continued private-RPC denial verified; public/private roster and race equivalence passed. All current dashboard functionality can operate anonymously. Previous data limitations for splits, positions and weather adjustment remain. No parent/athlete app files were modified.
+
+Deployment follows the existing main-branch GitHub Actions workflow. Final run status is reported with the task response.
+
+## Original implementation
+
 Implemented all five sections: searchable/sortable active roster, athlete switching and profiles, season race chart with average/best comparisons, chronological and career race history, active-season Meet Explorer with PR summaries, improvement/consistency/physiology analytics, and authoritative race groups/anchors. CSV export and table copying are available throughout. Missing and small samples, failed requests, access denial and empty data have explicit states.
 
 Architecture, database objects, formulas, security and exact administrator setup are documented in README.md. Application files: `src/main.jsx`, `src/style.css`, `src/client.js`, `src/format.js`, `index.html`, package manifests, public CNAME/.nojekyll. Infrastructure and validation: `.github/workflows/deploy-pages.yml`, `database/coach-portal.sql`, `database/validate.sql`, `scripts/github.mjs`, unit/browser tests and Playwright configuration. Only this repository and additive coach database objects were changed.

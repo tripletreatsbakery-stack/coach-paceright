@@ -2,6 +2,20 @@
 
 Independent, read-only Noblesville boys XC dashboard for https://coach.paceright.run.
 
+## Temporary public mode
+
+Production now uses `VITE_REQUIRE_COACH_AUTH=false`. It opens directly to Roster and has no login screen, authentication requests, auth redirects, or sign-out navigation. All five dashboard sections, statistics, charts and exports remain available from data already readable by the anonymous role. Loading and database permission errors stay within the dashboard; a restricted dataset is reported rather than bypassed.
+
+The original Login component, session handling, coach allowlist, private SQL views, and protected `coach_dashboard()` RPC are preserved unchanged in behavior. To restore login, set the GitHub Actions repository variable **VITE_REQUIRE_COACH_AUTH=true** and rerun the Deploy Coach Portal workflow (or push to main). For local development, set the same value in `.env.local`; restart Vite. Only the exact value `false` disables auth; absent/other values require it. `.env.production` supplies the temporary production default; the workflow's repository variable overrides it.
+
+Public mode calls `public.coach_public_dashboard()`, a new **SECURITY INVOKER**, read-only SQL function using only the caller's existing permissions. It does not call the private RPC, reference private views, grant table access, alter policies, or introduce privileged credentials. It reads the already-anonymous-readable `athletes`, `results`, `events`, `meets`, `v_athlete_xc_race_vdot`, and `v_athlete_xc_race_neighborhood`. Existing source-view permission behavior is unchanged. `database/public-dashboard.sql` is generated from the same verified SQL calculations using `node scripts/generate-public-dashboard.mjs`; regenerate and apply it when changing the source SQL.
+
+Anonymous REST requests to all six sources and the public RPC were verified. The public roster and race payload exactly matched the protected calculation output under database testing. All 51 active athletes and 51 neighborhoods remain available. No current feature requires login in this mode. Previously unavailable splits, official positions, and current-season weather adjustment remain unavailable for the same data reasons. The private coach RPC and membership table remain inaccessible anonymously.
+
+Restoring the site's login does not make already-public source data private. If the temporary aggregation endpoint is no longer wanted, an administrator can additionally run `revoke execute on function public.coach_public_dashboard() from anon, authenticated;` without affecting the preserved protected RPC or source policies. Parent and athlete applications are unchanged.
+
+The remaining sections describe the preserved authenticated architecture and shared calculation rules. In public mode, references to the protected RPC apply only when authentication is re-enabled.
+
 ## Run and verify
 
 Use Node 24. `npm ci`, copy `.env.example` to `.env.local`, provide the existing project's public anon/publishable key, then `npm run dev`. On Windows with restricted PowerShell scripts use `npm.cmd` / `npx.cmd`.

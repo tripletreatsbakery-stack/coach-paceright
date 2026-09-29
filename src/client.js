@@ -1,6 +1,8 @@
 import { createClient } from '@supabase/supabase-js';
 const url = import.meta.env.VITE_SUPABASE_URL;
 const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+// Fail closed unless public mode is explicitly selected at build time.
+export const requireCoachAuth = import.meta.env.VITE_REQUIRE_COACH_AUTH !== 'false';
 function publicKey(k) {
   if (!k || k.startsWith('sb_secret_')) return false;
   if (k.startsWith('sb_publishable_')) return true;
