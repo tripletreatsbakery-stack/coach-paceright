@@ -1,0 +1,11 @@
+# Implementation report
+
+Implemented all five sections: searchable/sortable active roster, athlete switching and profiles, season race chart with average/best comparisons, chronological and career race history, active-season Meet Explorer with PR summaries, improvement/consistency/physiology analytics, and authoritative race groups/anchors. CSV export and table copying are available throughout. Missing and small samples, failed requests, access denial and empty data have explicit states.
+
+Architecture, database objects, formulas, security and exact administrator setup are documented in README.md. Application files: `src/main.jsx`, `src/style.css`, `src/client.js`, `src/format.js`, `index.html`, package manifests, public CNAME/.nojekyll. Infrastructure and validation: `.github/workflows/deploy-pages.yml`, `database/coach-portal.sql`, `database/validate.sql`, `scripts/github.mjs`, unit/browser tests and Playwright configuration. Only this repository and additive coach database objects were changed.
+
+Validation completed: production build; three unit tests; six desktop/mobile browser tests with test-only API fixtures; screenshot review at 1440px and 390px; seven read-only production SQL assertions; database denial of anonymous/non-coach access; authorized live query in a rolled-back membership transaction. Browser tests are not a claim of real coach password authentication.
+
+Outstanding: identify and enroll the intended coach Auth account. Splits, placements, race execution and current-season weather adjustment remain unavailable because their required data/authoritative definitions are absent. Existing shared-project security exposures were reported, not altered.
+
+Deployment status: pending final Actions verification.
