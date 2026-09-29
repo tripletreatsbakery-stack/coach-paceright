@@ -8,4 +8,6 @@ Validation completed: production build; three unit tests; six desktop/mobile bro
 
 Outstanding: identify and enroll the intended coach Auth account. Splits, placements, race execution and current-season weather adjustment remain unavailable because their required data/authoritative definitions are absent. Existing shared-project security exposures were reported, not altered.
 
-Deployment status: pending final Actions verification.
+Deployment verified: https://coach.paceright.run returns HTTPS 200, serves the correct CNAME, and displays the configured login page without a configuration error. GitHub Actions run https://github.com/tripletreatsbakery-stack/coach-paceright/actions/runs/36638352953 passed unit/browser tests, build and Pages deployment for implementation commit 703d403. Subsequent hardening adds build-time rejection of privileged keys; the final workflow run is available in repository Actions.
+
+Additional checks passed: live REST anonymous request returned HTTP 401; recent-three aggregates matched SQL recalculation; every included distance was 5000m; known sample SD of [900,960,1020] was 60 seconds. Vite refuses a test privileged key before building. Production login was checked in Chromium. No permanent coach allowlist entries exist pending the intended coach email.

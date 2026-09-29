@@ -16,7 +16,7 @@ select 'season mean and sample SD match',not exists(
  where r.athlete_id=a.athlete_id and r.season=extract(year from current_date)) s on true
  where a.season_average is distinct from s.mean or a.season_sd is distinct from s.sd)
 union all
-select 'no persistent test grants',(select count(*) from coach_private.members)=0
+select 'membership RLS enabled',(select relrowsecurity from pg_class where oid='coach_private.members'::regclass)
 union all
 select 'anon cannot execute',not has_function_privilege('anon','public.coach_dashboard()','execute')
 union all

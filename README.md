@@ -49,7 +49,7 @@ Exports reflect the currently sorted/filtered table, use quoted UTF-8 CSV with B
 
 ## Authentication and administrator setup
 
-Supabase email/password login; session is held in memory, not persistent local storage. There is no public registration interface. Any new Auth account still needs an explicit coach allowlist entry. No service-role key or password is used by the app or Actions. Environment validation rejects privileged keys.
+Supabase email/password login; session is held in memory, not persistent local storage. There is no public registration interface. Any new Auth account still needs an explicit coach allowlist entry. No service-role key or password is used by the app or Actions. Vite build-time validation rejects privileged keys before bundling; the client also validates configuration.
 
 An administrator must create/identify each intended coach in Supabase Authentication, provide account/password setup through the normal administration process, and run this in Supabase SQL Editor, substituting the verified email:
 
