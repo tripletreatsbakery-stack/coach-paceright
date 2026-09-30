@@ -1,5 +1,9 @@
 # Implementation report
 
+## Historical Class Analytics update
+
+Added Analytics → Class Analytics with canonical reporting-view metrics, latest/historical season selection, inclusive 5/10-season and All History same-grade ranks, class athlete drill-down, historical tables, Sheets TSV and CSV. No schema/security/authentication changes. See [CLASS_ANALYTICS_REPORT.md](CLASS_ANALYTICS_REPORT.md) for the complete file list, queries, methodology and live validation evidence.
+
 ## Temporary public mode update
 
 Added `VITE_REQUIRE_COACH_AUTH=false` for production. Roster is the direct landing view, with login UI/authentication requests/sign-out hidden in this mode. Existing auth components and protected database implementation are preserved and tested with the flag true. Restore via the GitHub repository variable and redeploy.

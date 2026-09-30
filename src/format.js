@@ -13,3 +13,16 @@ export function delimited(columns, rows, separator = ',') {
   const escape = value => { let s = String(value ?? unavailable); if (/^[=+@\-\t\r]/.test(s)) s = "'" + s; return '"' + s.replaceAll('"', '""') + '"'; };
   return [columns.map(c => c.label), ...rows.map(r => columns.map(c => c.format ? c.format(r[c.key]) : r[c.key]))].map(r => r.map(escape).join(separator)).join('\r\n');
 }
+// Unquoted TSV for pasting into Sheets. Keep signed numeric values numeric;
+// neutralize formula-like text, and remove embedded cell/row separators.
+export function sheetsTsv(columns, rows) {
+  const cell=value=>{
+    let text=String(value??'—').replace(/[\t\r\n]+/g,' ');
+    if(/^\s*[=+@-]/.test(text)&&!/^[-+]?\d+(\.\d+)?$/.test(text))text="'"+text;
+    return text;
+  };
+  return [columns.map(c=>c.label),...rows.map(r=>columns.map(c=>{
+    const format=c.copyFormat||c.format;
+    return format?format(r[c.key]):r[c.key];
+  }))].map(row=>row.map(cell).join('\t')).join('\r\n');
+}

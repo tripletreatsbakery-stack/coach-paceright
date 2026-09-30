@@ -2,6 +2,10 @@
 
 Independent, read-only Noblesville boys XC dashboard for https://coach.paceright.run.
 
+## Historical Class Analytics
+
+Open **Analytics → Class Analytics** or `/#analytics/classes` for historical grade comparisons. Defaults come from the latest reporting season and an inclusive five-season window. Metrics are read directly from `v_xc_class_summary` and `v_xc_class_athlete`, including inactive/graduated runners; only display ranks are computed in the browser. See [Class Analytics implementation and validation](CLASS_ANALYTICS_REPORT.md) for queries, ranking rules, files, checks and limitations. Current public-mode authentication and database security remain unchanged.
+
 ## Temporary public mode
 
 Production now uses `VITE_REQUIRE_COACH_AUTH=false`. It opens directly to Roster and has no login screen, authentication requests, auth redirects, or sign-out navigation. All five dashboard sections, statistics, charts and exports remain available from data already readable by the anonymous role. Loading and database permission errors stay within the dashboard; a restricted dataset is reported rather than bypassed.
