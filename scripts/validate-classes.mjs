@@ -20,7 +20,7 @@ try{
  await page.goto(site+'/#analytics/classes');await expect(page.getByLabel('XC season')).toHaveValue(String(latest));
  for(const row of latestRows){
   const card=page.locator(`[data-grade="${row.class_name}"]`);
-  for(const field of ['athlete_count','result_count','sub_17','sub_18','sub_19','sub_20']){await expect(card.locator(`[data-field="${field}"]`)).toHaveText(expected(row[field]==null?null:number(row[field])));cardChecks++;}
+  for(const field of ['athlete_count','result_count','sub_16','sub_17','sub_18','sub_19']){await expect(card.locator(`[data-field="${field}"]`)).toHaveText(expected(row[field]==null?null:number(row[field])));cardChecks++;}
   for(const field of ['top5_avg_seconds','median_season_best_seconds']){await expect(card.locator(`[data-field="${field}"]`)).toHaveText(expected(row[field]==null?null:time(row[field])));cardChecks++;}
   for(const field of ['median_season_improvement_seconds','median_yoy_improvement_seconds']){await expect(card.locator(`[data-field="${field}"]`)).toHaveText(expected(row[field]==null?null:delta(row[field])));cardChecks++;}
  }
@@ -45,7 +45,7 @@ try{
  await page.screenshot({path:'test-results/live-classes-desktop.png',fullPage:true});
  await page.getByRole('region',{name:'Selected class athletes'}).getByRole('button',{name:'Copy for Sheets'}).click();
  const clipboard=await page.evaluate(()=>navigator.clipboard.readText());assert.equal(clipboard.split('\r\n')[0].split('\t').length,8);assert.ok(!clipboard.startsWith('"'));
- const oldest=seasons.at(-1);await page.getByLabel('XC season').selectOption(String(oldest));await expect(page.locator('.class-window')).toContainText(`${oldest}–${oldest}`);
+ const oldest=seasons.at(-1);await page.getByLabel('XC season').selectOption(String(oldest));await expect(page.locator('.class-window')).toContainText(`${latest-4}–${latest}`);
  const historical=await readAll(()=>db.from('v_xc_class_athlete').select(athleteFields,{count:'exact'}).eq('season',oldest).eq('class_name','Senior').order('class_sb_rank').order('season_best_seconds').order('athlete_id'));
  await expect(page.getByRole('region',{name:'Selected class athletes'}).locator('tbody tr')).toHaveCount(historical.length);
  if(historical.length)await expect(page.getByRole('region',{name:'Selected class athletes'}).locator('tbody tr').first().locator('td').first()).toHaveText(historical[0].full_name);

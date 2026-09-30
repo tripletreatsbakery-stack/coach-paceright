@@ -1,7 +1,7 @@
 import {test,expect} from '@playwright/test';
 const names=['Freshman','Sophomore','Junior','Senior'];
 const seasons=[2010,...Array.from({length:11},(_,i)=>2020+i)];
-const summaries=seasons.flatMap(season=>names.map((class_name,i)=>({season,graduation_year:season+4-i,class_name,athlete_count:season===2010?2:6,result_count:31,avg_season_best_seconds:1123.45,median_season_best_seconds:1200+(season-2020)*10,top5_avg_seconds:1000+(season-2020)*10,sub_17:1,sub_18:2,sub_19:3,sub_20:4,median_season_improvement_seconds:34.7,median_yoy_improvement_seconds:i?12.5:null,yoy_athlete_count:i?5:0})));
+const summaries=seasons.flatMap(season=>names.map((class_name,i)=>({season,graduation_year:season+4-i,class_name,athlete_count:season===2010?2:6,result_count:31,avg_season_best_seconds:1123.45,median_season_best_seconds:1200+(season-2020)*10,top5_avg_seconds:1000+(season-2020)*10,sub_16:0,sub_17:1,sub_18:2,sub_19:3,sub_20:4,median_season_improvement_seconds:34.7,median_yoy_improvement_seconds:i?12.5:null,yoy_athlete_count:i?5:0})));
 async function fixture(page){
   await page.route('**/rpc/coach_public_dashboard',r=>r.fulfill({json:{season:2099,as_of:'2099-01-01',roster:[],races:[],meets:[],groups:[],physiology:[]}}));
   await page.route('**/rest/v1/v_xc_class_summary?*',r=>r.fulfill({json:summaries,headers:{'access-control-expose-headers':'content-range','content-range':`0-${summaries.length-1}/${summaries.length}`}}));

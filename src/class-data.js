@@ -3,7 +3,7 @@ export const grades = [
   {name:'Freshman',label:'Freshmen'}, {name:'Sophomore',label:'Sophomores'},
   {name:'Junior',label:'Juniors'}, {name:'Senior',label:'Seniors'},
 ];
-export const summaryFields = 'season,graduation_year,class_name,athlete_count,result_count,avg_season_best_seconds,median_season_best_seconds,top5_avg_seconds,sub_17,sub_18,sub_19,sub_20,median_season_improvement_seconds,median_yoy_improvement_seconds,yoy_athlete_count';
+export const summaryFields = 'season,graduation_year,class_name,athlete_count,result_count,avg_season_best_seconds,median_season_best_seconds,top5_avg_seconds,sub_16,sub_17,sub_18,sub_19,sub_20,median_season_improvement_seconds,median_yoy_improvement_seconds,yoy_athlete_count';
 export const athleteFields = 'season,graduation_year,class_name,athlete_id,full_name,season_best_seconds,first_5k_seconds,race_count,prior_season_best_seconds,season_improvement_seconds,yoy_improvement_seconds,class_sb_rank';
 export const availableSeasons = rows => [...new Set(rows.map(r=>r.season))].sort((a,b)=>b-a);
 export function seasonWindow(rows,latestSeason,period) {
