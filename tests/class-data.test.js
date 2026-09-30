@@ -22,6 +22,25 @@ test('competition ranks preserve ties, missing values and full precision',()=>{
   assert.equal(rankText({rank:22,total:30}),'22nd of 30');
   assert.equal(competitionRank(values[0],[],'value'),null);
 });
+test('as-of rankings exclude future seasons for every displayed ranking metric',()=>{
+  const metrics=[['top5_avg_seconds',false],['median_season_best_seconds',false],['athlete_count',true],['sub_17',true],['sub_18',true],['sub_19',true],['sub_20',true],['median_season_improvement_seconds',true]];
+  const history=Array.from({length:17},(_,i)=>2010+i).flatMap(season=>['Freshman','Sophomore','Junior','Senior'].map((class_name,index)=>({
+    season,graduation_year:season+4-index,class_name,
+    ...Object.fromEntries(metrics.map(([key,higher])=>[key,higher?season-2000:4000-season])),
+  })));
+  for(const [season,grade,period,start,total] of [[2023,'Sophomore','all',2010,14],[2020,'Senior','5',2016,5],[2020,'Senior','10',2011,10]]){
+    const selected=history.find(r=>r.season===season&&r.class_name===grade);
+    const window=comparisonRows(history,season,period,grade);
+    assert.equal(window.length,total);assert.equal(window.at(-1).season,start);
+    assert.ok(window.every(r=>r.season<=season&&r.class_name===grade));
+    for(const [metric,higher] of metrics){
+      const rank=competitionRank(selected,window,metric,higher);
+      assert.deepEqual(rank,{rank:1,total,tied:false},`${season} ${grade} ${period}: ${metric}`);
+      const withoutFuture=comparisonRows(history.filter(r=>r.season<=season),season,period,grade);
+      assert.deepEqual(rank,competitionRank(selected,withoutFuture,metric,higher));
+    }
+  }
+});
 test('pagination respects server caps and reports incomplete results',async()=>{
   const calls=[];const signal=new AbortController().signal;
   const query=()=>({range(from,to){calls.push([from,to]);return{abortSignal:async()=>({data:[1,2,3].slice(from,from+2),count:3,error:null})};}});

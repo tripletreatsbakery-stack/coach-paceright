@@ -36,6 +36,7 @@ Every class metric—including athlete/result counts, season-best times, medians
 - **10 Years:** selected season and nine preceding calendar seasons, inclusive.
 - **All History:** earliest available reporting season through the selected season.
 - No future seasons, missing-season interpolation, cross-grade comparison or small-class exclusion.
+- Every ranked dimension uses that same as-of window, including athlete/depth counts and improvement. Regression examples: 2023 Sophomores / All History uses only 2010–2023 Sophomores (14 available class-seasons); 2020 Seniors / 5 Years uses only 2016–2020 Seniors (5 available class-seasons). Later seasons cannot change either ranking or denominator. Missing metric values are excluded as described below.
 - Compare only matching canonical `class_name` values. Use the original database precision before MM:SS.s/tenths display rounding.
 - Competition rank = 1 + number of strictly better values. Ties share a rank and leave gaps, with “(tie)” shown. Rank denominator includes only non-null finite values for that metric.
 - Lower Top-5 average/median times rank first. Higher athlete/depth counts and larger positive season improvement rank first. Missing metrics have no rank. These dimensions stay separate.
