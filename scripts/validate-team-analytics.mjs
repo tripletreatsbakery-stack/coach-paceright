@@ -29,11 +29,13 @@ try{
    await expect(card.locator('[data-benchmark="season"]')).toHaveText(season);
  }
  await card.screenshot({path:'test-results/live-class-benchmark.png'});
+ await page.getByLabel('XC season').selectOption('2022');
+ await expect(card.locator('[data-rank="top5_avg_seconds"]')).toHaveText('2nd of 17');
  await page.getByLabel('XC season').selectOption('2020');
- await expect(card.locator('[data-rank="top5_avg_seconds"]')).toHaveText('5th of 11');
+ await expect(card.locator('[data-rank="top5_avg_seconds"]')).toHaveText('10th of 17');
  await expect(card.locator('[data-field="top5_avg_seconds"]')).toHaveText('17:24.6');
  await expect(card.locator('[data-benchmark="season"]')).toHaveText('Sophomores · 2018');
- await page.getByRole('button',{name:'5 Years',exact:true}).click();await expect(card.locator('[data-rank="top5_avg_seconds"]')).toHaveText('3rd of 5');
+ await page.getByRole('button',{name:'5 Years',exact:true}).click();await expect(card.locator('[data-rank="top5_avg_seconds"]')).toHaveText('Outside comparison window');
  const nav=page.getByRole('navigation',{name:'Analytics sections'});
  await expect(nav.getByRole('link')).toHaveText(['Current season','Class Analytics','Team Analytics']);
  await nav.getByRole('link',{name:'Team Analytics',exact:true}).click();await expect(page.getByLabel('XC season')).toHaveValue('2026');
@@ -54,11 +56,11 @@ try{
    await page.screenshot({path:`test-results/live-team-${width}.png`,fullPage:true});
  }
  await page.getByLabel('XC season').selectOption('2020');
- await expect(page.locator('[data-rank="top5_avg_seconds"]')).toHaveText('1st of 11');
- await expect(page.locator('[data-benchmark="value"]')).toHaveText('2020 · 15:41.2 · This team');
+ await expect(page.locator('[data-rank="top5_avg_seconds"]')).toHaveText('5th of 17');
+ await expect(page.locator('[data-benchmark="value"]')).toHaveText('2025 · 15:19.8');
  await page.getByRole('button',{name:'5 Years',exact:true}).click();
- await expect(page.locator('[data-rank="top5_avg_seconds"]')).toHaveText('1st of 5');
- await expect(page.locator('[data-benchmark="value"]')).toHaveText('2020 · 15:41.2 · This team');
+ await expect(page.locator('[data-rank="top5_avg_seconds"]')).toHaveText('Outside comparison window');
+ await expect(page.locator('[data-benchmark="value"]')).toHaveText('2025 · 15:19.8');
  assert.deepEqual(errors,[]);
  console.log(JSON.stringify({site,anonymousTeamSeasons:teams.length,classCases,team2026:selected,history2020:'passed',desktopTabletMobile:'passed',browserErrors:errors.length},null,2));
 }finally{await browser.close();}

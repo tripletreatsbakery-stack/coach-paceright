@@ -2,6 +2,7 @@
 
 /* Front-five historical comparison is the focal point; depth and development support it. */
 .analytics-tabs{flex-wrap:wrap}
+.top5-rank.outside-window{font-size:23px;letter-spacing:-.3px;line-height:1.3}
 @media(max-width:650px){.analytics-tabs a{padding:10px;font-size:11px}}
 .historical-best{display:flex;flex-direction:column;gap:7px;padding:17px 0;border-bottom:1px solid var(--border)}
 .historical-best strong{font-size:18px;font-weight:500;color:#edf0e9;font-variant-numeric:tabular-nums}.historical-best small{font-size:11px;color:var(--muted)}

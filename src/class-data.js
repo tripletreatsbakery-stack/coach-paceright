@@ -6,11 +6,11 @@ export const grades = [
 export const summaryFields = 'season,graduation_year,class_name,athlete_count,result_count,avg_season_best_seconds,median_season_best_seconds,top5_avg_seconds,sub_17,sub_18,sub_19,sub_20,median_season_improvement_seconds,median_yoy_improvement_seconds,yoy_athlete_count';
 export const athleteFields = 'season,graduation_year,class_name,athlete_id,full_name,season_best_seconds,first_5k_seconds,race_count,prior_season_best_seconds,season_improvement_seconds,yoy_improvement_seconds,class_sb_rank';
 export const availableSeasons = rows => [...new Set(rows.map(r=>r.season))].sort((a,b)=>b-a);
-export function seasonWindow(rows,season,period) {
-  return rows.filter(r=>r.season<=season && (period==='all'||r.season>=season-Number(period)+1)).sort((a,b)=>b.season-a.season);
+export function seasonWindow(rows,latestSeason,period) {
+  return rows.filter(r=>r.season<=latestSeason && (period==='all'||r.season>=latestSeason-Number(period)+1)).sort((a,b)=>b.season-a.season);
 }
-export function comparisonRows(rows,season,period,grade) {
-  return seasonWindow(rows,season,period).filter(r=>r.class_name===grade);
+export function comparisonRows(rows,latestSeason,period,grade) {
+  return seasonWindow(rows,latestSeason,period).filter(r=>r.class_name===grade);
 }
 // Input is the exact comparison universe used for the displayed rank.
 // Prefer the selected row in a tie, otherwise the earliest tied benchmark.
