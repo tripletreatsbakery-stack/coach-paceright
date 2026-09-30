@@ -1,8 +1,19 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {availableSeasons,comparisonRows,competitionRank,rankText,readAll} from '../src/class-data.js';
+import {availableSeasons,comparisonRows,competitionRank,rankText,readAll,historicalBest,seasonWindow} from '../src/class-data.js';
 import {sheetsTsv} from '../src/format.js';
 const rows=Array.from({length:18},(_,i)=>({season:2010+i,graduation_year:2014+i,class_name:'Freshman',top5_avg_seconds:1000+i}));
+test('benchmarks share the rank window, exclude missing/future values and prefer self in ties',()=>{
+  const history=[{season:2010,top5_avg_seconds:900},{season:2020,top5_avg_seconds:950},{season:2021,top5_avg_seconds:950},{season:2022,top5_avg_seconds:null},{season:2026,top5_avg_seconds:800}];
+  const selected=history[2],five=seasonWindow(history,2021,'5'),all=seasonWindow(history,2021,'all');
+  assert.equal(historicalBest(five,selected),selected);
+  assert.equal(historicalBest(all,selected).season,2010);
+  assert.deepEqual(competitionRank(selected,five,'top5_avg_seconds'),{rank:1,total:2,tied:true});
+  assert.equal(historicalBest([history[3]],history[3]),null);
+  assert.equal(historicalBest(five,history[3]).season,2020);
+  const classes=[...rows,{season:2015,class_name:'Senior',top5_avg_seconds:1}];
+  assert.equal(historicalBest(comparisonRows(classes,2020,'5','Freshman'),rows[10]).season,2016);
+});
 test('windows include selected season, exclude future, and compare the same grade',()=>{
   const mixed=[...rows,{season:2026,class_name:'Senior'}];
   assert.deepEqual(comparisonRows(mixed,2026,'5','Freshman').map(r=>r.season),[2026,2025,2024,2023,2022]);

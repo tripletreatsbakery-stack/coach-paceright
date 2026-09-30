@@ -1,7 +1,7 @@
 import React, {useEffect,useState} from 'react';
 import {client} from '../client';
 import {time,number,delta} from '../format';
-import {grades,summaryFields,athleteFields,availableSeasons,comparisonRows,competitionRank,rankText,readAll} from '../class-data';
+import {grades,summaryFields,athleteFields,availableSeasons,comparisonRows,competitionRank,rankText,readAll,historicalBest} from '../class-data';
 import Table from './DataTable';
 import '../classes.css';
 
@@ -27,10 +27,12 @@ function reportingError(error,view) {
 }
 function ClassCard({row,grade,selected,comparisons,period,onSelect}) {
   const rank=(key,higher=false)=>rankText(competitionRank(row,comparisons,key,higher));
+  const best=historicalBest(comparisons,row);
   return <button className={'class-card'+(selected?' selected':'')} aria-pressed={selected} disabled={!row} onClick={onSelect} data-grade={grade.name}>
     <span className="class-heading"><span><span className="eyebrow">{grade.label}</span><strong>{row?`Class of ${row.graduation_year}`:'No reporting row'}</strong></span><span aria-hidden="true">↗</span></span>
     {!row?<span className="muted">No class data for this season.</span>:<>
       <span className="class-top5"><span className="rank-label">TOP-5 AVERAGE</span><strong className="top5-rank" data-rank="top5_avg_seconds">{rank('top5_avg_seconds')}</strong><span className="top5-context">{period==='all'?'ALL-TIME AT THIS GRADE':`${period}-YEAR WINDOW AT THIS GRADE`}<small>As of {row.season}</small></span><span className="top5-time" data-field="top5_avg_seconds">{duration(row.top5_avg_seconds)}</span><small>Average of the fastest season bests</small></span>
+      <span className="historical-best"><span className="rank-label">HISTORICAL BEST</span>{best?<><strong data-benchmark="value">{best.season===row.season&&best.graduation_year===row.graduation_year?'This class':`Class of ${best.graduation_year}`} · {duration(best.top5_avg_seconds)}</strong><small data-benchmark="season">{grade.label} · {best.season}</small></>:<small>No eligible Top-5 average in this window.</small>}</span>
       <span className="class-count"><span className="rank-label">CLASS DEPTH</span><span className="class-count-value"><span data-field="athlete_count">{count(row.athlete_count)}</span> athletes <span className="muted">· <span data-field="result_count">{count(row.result_count)}</span> results</span></span></span>
       <span className="class-depth">{['17','18','19','20'].map(n=><span key={n}><small>SUB-{n}</small><strong data-field={'sub_'+n}>{count(row['sub_'+n])}</strong><small>athletes</small></span>)}</span>
       <span className="class-support"><span><span className="rank-label">MEDIAN SEASON BEST</span><strong data-field="median_season_best_seconds">{duration(row.median_season_best_seconds)}</strong><small><span data-rank="median_season_best_seconds">{rank('median_season_best_seconds')}</span> at this grade</small></span><span><span className="rank-label">SEASON IMPROVEMENT</span><strong data-field="median_season_improvement_seconds">{improvement(row.median_season_improvement_seconds)}</strong><small>Median · <span data-rank="median_season_improvement_seconds">{rank('median_season_improvement_seconds',true)}</span></small></span></span>

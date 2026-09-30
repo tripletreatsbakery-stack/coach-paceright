@@ -21,11 +21,15 @@ test('canonical cards, inclusive windows, historical drilldown, plain copy and C
   expect(await page.locator('.class-card').evaluateAll(cards=>cards.map(c=>c.dataset.grade))).toEqual(names);
   const card=page.locator('[data-grade="Sophomore"]');await expect(card.locator('[data-field="top5_avg_seconds"]')).toHaveText('18:20.0');
   await expect(card.locator('[data-rank="top5_avg_seconds"]')).toHaveText('5th of 5');await expect(card.locator('[data-field="median_season_improvement_seconds"]')).toHaveText('+34.7 s');
+  await expect(card.locator('[data-benchmark="value"]')).toHaveText('Class of 2029 · 17:40.0');
+  await expect(card.locator('[data-benchmark="season"]')).toHaveText('Sophomores · 2026');
   await page.getByRole('button',{name:'10 Years',exact:true}).click();await expect(card.locator('[data-rank="top5_avg_seconds"]')).toHaveText('10th of 10');
   await page.getByRole('button',{name:'All History',exact:true}).click();await expect(card.locator('[data-rank="top5_avg_seconds"]')).toHaveText('12th of 12');
+  await expect(card.locator('[data-benchmark="value"]')).toHaveText('Class of 2013 · 15:00.0');
   await card.click();await expect(page.getByRole('cell',{name:'Historical Sophomore 2030',exact:true})).toBeVisible();
   await page.getByLabel('XC season').selectOption('2026');await page.getByRole('button',{name:'5 Years',exact:true}).click();
   await expect(page.locator('.class-window')).toContainText('2022–2026');await expect(card).toContainText('Class of 2029');
+  await expect(card.locator('[data-benchmark="season"]')).toHaveText('Sophomores · 2022');
   await expect(page.getByRole('cell',{name:'Historical Sophomore 2026',exact:true})).toBeVisible();
   const trend=page.getByRole('region',{name:'Historical class trend'});await expect(trend.locator('tbody tr')).toHaveCount(5);await expect(trend.locator('tbody tr').first().locator('td').first()).toHaveText('2026');
   await expect(page.getByRole('region',{name:'Selected class athletes'}).getByRole('cell',{name:'—',exact:true})).toHaveCount(2);
@@ -33,6 +37,7 @@ test('canonical cards, inclusive windows, historical drilldown, plain copy and C
   const copied=await page.evaluate(()=>window.copiedText);expect(copied.split('\r\n')[0].split('\t')).toHaveLength(8);expect(copied).toContain('Historical Sophomore 2026\t15:00.0\t1\t15:50.0\t50.0\t—\t—\t4');
   const download=page.waitForEvent('download');await detail.getByRole('button',{name:'Export CSV'}).click();expect((await download).suggestedFilename()).toBe('class-2026-sophomore.csv');
   await page.getByLabel('XC season').selectOption('2010');await expect(page.getByRole('cell',{name:'Historical Sophomore 2010',exact:true})).toBeVisible();await expect(card).toContainText('Front average uses 2 available athletes.');
+  await expect(card.locator('[data-benchmark="value"]')).toHaveText('This class · 15:00.0');
   await page.getByLabel('XC season').selectOption('2030');await expect(card.locator('[data-rank="top5_avg_seconds"]')).toHaveText('5th of 5');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();await page.screenshot({path:info.outputPath('class-analytics.png'),fullPage:true});expect(errors).toEqual([]);
 });

@@ -6,8 +6,20 @@ export const grades = [
 export const summaryFields = 'season,graduation_year,class_name,athlete_count,result_count,avg_season_best_seconds,median_season_best_seconds,top5_avg_seconds,sub_17,sub_18,sub_19,sub_20,median_season_improvement_seconds,median_yoy_improvement_seconds,yoy_athlete_count';
 export const athleteFields = 'season,graduation_year,class_name,athlete_id,full_name,season_best_seconds,first_5k_seconds,race_count,prior_season_best_seconds,season_improvement_seconds,yoy_improvement_seconds,class_sb_rank';
 export const availableSeasons = rows => [...new Set(rows.map(r=>r.season))].sort((a,b)=>b-a);
+export function seasonWindow(rows,season,period) {
+  return rows.filter(r=>r.season<=season && (period==='all'||r.season>=season-Number(period)+1)).sort((a,b)=>b.season-a.season);
+}
 export function comparisonRows(rows,season,period,grade) {
-  return rows.filter(r=>r.class_name===grade && r.season<=season && (period==='all'||r.season>=season-Number(period)+1)).sort((a,b)=>b.season-a.season);
+  return seasonWindow(rows,season,period).filter(r=>r.class_name===grade);
+}
+// Input is the exact comparison universe used for the displayed rank.
+// Prefer the selected row in a tie, otherwise the earliest tied benchmark.
+export function historicalBest(rows,selected,key='top5_avg_seconds') {
+  const eligible=rows.filter(r=>r[key]!=null && Number.isFinite(Number(r[key])));
+  if(!eligible.length)return null;
+  const minimum=Math.min(...eligible.map(r=>Number(r[key])));
+  const best=eligible.filter(r=>Number(r[key])===minimum);
+  return best.find(r=>r.season===selected?.season && r.graduation_year===selected?.graduation_year) || best.sort((a,b)=>a.season-b.season)[0];
 }
 export function competitionRank(row,rows,key,higherIsBetter=false) {
   if(row?.[key]==null || !Number.isFinite(Number(row[key])))return null;
